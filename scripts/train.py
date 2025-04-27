@@ -4,6 +4,9 @@ from src.data.clinical_loader import ClinicalECGDataset
 from src.model import MedicalImageEncoder, ClinicalTextEncoder, MedicalCrossAttention, ClinicalClassifier
 from src.engine.clinical_trainer import MedicalTrainer
 from torch.utils.data import DataLoader
+from src.model.clinical_vqa import ClinicalVQAModel
+from src.configs.clinical_config import ClinicalConfig
+
 
 def main():
     config = ClinicalConfig()
@@ -12,7 +15,7 @@ def main():
     # Initialize components
     train_dataset = ClinicalECGDataset(
         'clinical_data/train.json',
-        'clinical_data/ecg_images',
+        'clinical_data/',
         config.tokenizer
     )
     

@@ -16,12 +16,18 @@ class MedicalImageEncoder(nn.Module):
         attn_out, _ = self.lead_attention(x, x, x)
         return attn_out.mean(dim=0)
 
+# In src/model/clinical_encoders.py
 class ClinicalTextEncoder(nn.Module):
     def __init__(self):
         super().__init__()
-        self.model = AutoModel.from_pretrained("monologg/biobert_v1.1_pubmed")
-        self.proj = nn.Linear(768, 512)
+        self.biobert = AutoModel.from_pretrained("monologg/biobert_v1.1_pubmed")
+        self.projection = nn.Linear(768, 512)  # Proper dimension projection
         
-    def forward(self, input_ids):
-        outputs = self.model(input_ids=input_ids)
-        return self.proj(outputs.last_hidden_state[:, 0])
+    def forward(self, input_ids, attention_mask=None):
+        # Pass attention_mask to handle padding properly
+        outputs = self.biobert(
+            input_ids=input_ids,
+            attention_mask=attention_mask
+        )
+        pooled = outputs.last_hidden_state[:, 0]  # CLS token
+        return self.projection(pooled)

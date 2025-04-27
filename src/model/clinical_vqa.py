@@ -1,6 +1,10 @@
 # ecg_vqa_system/src/model/clinical_vqa.py
 import torch
 import torch.nn as nn
+from .clinical_encoders import MedicalImageEncoder, ClinicalTextEncoder
+from .multimodal_fusion import MedicalCrossAttention, DiagnosticGate
+from .clinical_heads import ClinicalClassifier
+
 
 class ClinicalVQAModel(nn.Module):
     def __init__(self):
@@ -8,7 +12,7 @@ class ClinicalVQAModel(nn.Module):
         self.image_encoder = MedicalImageEncoder()
         self.text_encoder = ClinicalTextEncoder()
         self.cross_attn = MedicalCrossAttention()
-        self.diagnostic_gate = DiagnosticGate()
+        self.diagnostic_gate = DiagnosticGate(input_dim=512)
         self.classifier = ClinicalClassifier()
 
     def forward(self, images, input_ids):
