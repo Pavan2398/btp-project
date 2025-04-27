@@ -10,17 +10,28 @@ def main():
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     
     # Initialize components
-    train_dataset = ClinicalECGDataset('clinical_data/train.json', 'clinical_data/ecg_images', config.tokenizer)
-    train_loader = DataLoader(train_dataset, batch_size=config.batch_size, shuffle=True)
-    
-    model = torch.nn.Sequential(
-        MedicalImageEncoder(),
-        ClinicalTextEncoder(),
-        MedicalCrossAttention(),
-        ClinicalClassifier()
+    train_dataset = ClinicalECGDataset(
+        'clinical_data/train.json',
+        'clinical_data/ecg_images',
+        config.tokenizer
     )
     
-    optimizer = torch.optim.AdamW(model.parameters(), lr=config.lr)
+    train_loader = DataLoader(
+        train_dataset,
+        batch_size=config.batch_size,
+        shuffle=True,
+        num_workers=4,
+        pin_memory=True
+    )
+    
+    # Initialize model with proper architecture
+    model = ClinicalVQAModel().to(device)
+    
+    optimizer = torch.optim.AdamW(
+        model.parameters(),
+        lr=config.lr,
+        weight_decay=1e-5
+    )
     
     trainer = MedicalTrainer(model, train_loader, None, optimizer, device)
     

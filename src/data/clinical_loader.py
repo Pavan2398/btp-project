@@ -6,6 +6,7 @@ from PIL import Image
 import torch
 from torch.utils.data import Dataset
 from transformers import AutoTokenizer
+import numpy as np
 
 class ClinicalECGDataset(Dataset):
     def __init__(self, json_path, image_dir, tokenizer_name, max_length=128):
@@ -27,12 +28,16 @@ class ClinicalECGDataset(Dataset):
 
     @lru_cache(maxsize=1000)
     def _load_ecg_image(self, path):
+        if not path.endswith('.png'):
+            path += '.png'
         image = Image.open(os.path.join(self.image_dir, path)).convert('L')
         return self._medical_transform(image)
 
+
     def _medical_transform(self, img):
+        img_array = np.array(img)  # convert PIL image to numpy array
         return torch.stack([
-            torch.tensor(img).float().div(255).sub(0.5).div(0.5)
+            torch.tensor(img_array).float().div(255).sub(0.5).div(0.5)
         ])
 
     def __len__(self):
