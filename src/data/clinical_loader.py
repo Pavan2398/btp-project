@@ -1,4 +1,5 @@
 # ecg_vqa_system/src/data/clinical_loader.py
+
 import os
 import json
 from functools import lru_cache
@@ -33,7 +34,6 @@ class ClinicalECGDataset(Dataset):
         image = Image.open(os.path.join(self.image_dir, path)).convert('L')
         return self._medical_transform(image)
 
-
     def _medical_transform(self, img):
         img_array = np.array(img)  # convert PIL image to numpy array
         return torch.stack([
@@ -43,19 +43,19 @@ class ClinicalECGDataset(Dataset):
     def __len__(self):
         return len(self.data)
 
-    # In clinical_loader.py
     def __getitem__(self, idx):
-       item = self.data[idx]
-       encoding = self.tokenizer(
-          item['question'],
-          max_length=self.max_length,
-          padding='max_length',
-          truncation=True,
-          return_tensors='pt'
-       )
-       return {
-       	 'image': self._load_ecg_image(item['ecg_path']),
-         'input_ids': encoding['input_ids'].squeeze(),
-         'attention_mask': encoding['attention_mask'].squeeze(),
-         'answer': torch.tensor(item['answer'], dtype=torch.long)
-       }	
+        item = self.data[idx]
+        encoding = self.tokenizer(
+            item['question'],
+            max_length=self.max_length,
+            padding='max_length',
+            truncation=True,
+            return_tensors='pt',
+            return_attention_mask=True  # ✅ Ensure attention mask is included
+        )
+        return {
+            'image': self._load_ecg_image(item['ecg_path']),
+            'input_ids': encoding['input_ids'].squeeze(0),         # (seq_len)
+            'attention_mask': encoding['attention_mask'].squeeze(0),  # ✅ added attention_mask
+            'answer': torch.tensor(item['answer'], dtype=torch.long)
+        }

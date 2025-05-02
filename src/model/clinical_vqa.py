@@ -1,10 +1,11 @@
 # ecg_vqa_system/src/model/clinical_vqa.py
 import torch
 import torch.nn as nn
+import torch.utils.checkpoint as cp
+
 from .clinical_encoders import MedicalImageEncoder, ClinicalTextEncoder
 from .multimodal_fusion import MedicalCrossAttention, DiagnosticGate
 from .clinical_heads import ClinicalClassifier
-
 
 class ClinicalVQAModel(nn.Module):
     def __init__(self):
@@ -16,17 +17,15 @@ class ClinicalVQAModel(nn.Module):
         self.classifier = ClinicalClassifier()
 
     def forward(self, images, input_ids):
-        # Image processing
-        img_features = self.image_encoder(images)
-        
-        # Text processing
-        txt_features = self.text_encoder(input_ids)
-        
+        # Use checkpointing during the forward pass
+        img_features = cp.checkpoint(self.image_encoder, images)
+        txt_features = cp.checkpoint(self.text_encoder, input_ids)
+
         # Multimodal fusion
         fused_features = self.cross_attn(img_features, txt_features)
-        
+
         # Diagnostic gating
         gated_features = self.diagnostic_gate(fused_features)
-        
+
         # Classification
         return self.classifier(gated_features)
