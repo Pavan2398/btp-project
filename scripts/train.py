@@ -1,9 +1,5 @@
 import sys
 import os
-
-# Fix the import path problem
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-
 import torch
 from torch.utils.data import DataLoader
 from src.data.clinical_loader import ClinicalECGDataset
@@ -12,15 +8,16 @@ from src.engine.clinical_trainer import MedicalTrainer
 from src.model.clinical_vqa import ClinicalVQAModel
 from src.configs.clinical_config import ClinicalConfig
 
-
 def main():
     config = ClinicalConfig()
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
-    # Reduce batch size for limited GPU memory (e.g., Colab)
+    # Modify training parameters
     config.batch_size = 4  
-    config.image_encoder = 'efficientnet-b0'  # Lighter encoder
-    config.use_amp = True  # Enable mixed precision training
+    config.image_encoder = 'efficientnet-b0'
+    config.use_amp = True
+
+    checkpoint_path = "checkpoint.pth"
 
     # Dataset and DataLoader
     train_dataset = ClinicalECGDataset(
@@ -28,7 +25,6 @@ def main():
         'clinical_data/',
         tokenizer_name="emilyalsentzer/Bio_ClinicalBERT",
     )
-    # train_dataset = torch.utils.data.Subset(train_dataset, range(0, 4000))
     train_loader = DataLoader(
         train_dataset,
         batch_size=config.batch_size,
@@ -38,10 +34,8 @@ def main():
         persistent_workers=True
     )
 
-    # Model
+    # Model and optimizer
     model = ClinicalVQAModel().to(device)
-
-    # Optimizer
     optimizer = torch.optim.AdamW([
         {'params': model.image_encoder.parameters(), 'lr': 1e-5},
         {'params': model.text_encoder.parameters(), 'lr': 2e-5},
@@ -49,18 +43,37 @@ def main():
         {'params': model.classifier.parameters(), 'lr': 1e-4}
     ], weight_decay=1e-5)
 
-    # Trainer
+    start_epoch = 0
+
+    # Load checkpoint if exists
+    if os.path.exists(checkpoint_path):
+        print(f"Loading checkpoint from {checkpoint_path}")
+        checkpoint = torch.load(checkpoint_path, map_location=device)
+        model.load_state_dict(checkpoint['model_state_dict'])
+        optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
+        start_epoch = checkpoint['epoch'] + 1
+        print(f"Resuming from epoch {start_epoch}")
+
     trainer = MedicalTrainer(model, train_loader, None, optimizer, device)
 
     # Training loop
-    for epoch in range(config.epochs):
+    for epoch in range(start_epoch, config.epochs):
         loss, accuracy = trainer.train_epoch(epoch)
         print(f"Epoch {epoch} Loss: {loss:.4f} | Accuracy: {accuracy * 100:.2f}%")
 
+        # Save checkpoint every 5 epochs
+        if (epoch + 1) % 5 == 0 or (epoch + 1) == config.epochs:
+            torch.save({
+                'epoch': epoch,
+                'model_state_dict': model.state_dict(),
+                'optimizer_state_dict': optimizer.state_dict(),
+            }, checkpoint_path)
+            print(f"Checkpoint saved at epoch {epoch}")
+
+    # Final model save
     torch.save(model.state_dict(), config.model_save_path)
     torch.backends.cudnn.benchmark = True
     torch.cuda.empty_cache()
 
-
-if __name__ == "__main__":
+if _name_ == "_main_":
     main()
