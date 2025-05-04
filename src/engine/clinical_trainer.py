@@ -6,13 +6,13 @@ from tqdm.auto import tqdm
 from torch.cuda.amp import autocast, GradScaler
 
 class MedicalTrainer:
-    def __init__(self, model, train_loader, val_loader, optimizer, device):
+    def __init__(self, model, train_loader, val_loader, optimizer, device, scaler=None):
         self.model = model.to(device)
         self.train_loader = train_loader
         self.val_loader = val_loader
         self.optimizer = optimizer
         self.device = device
-        self.scaler = GradScaler()  # Compatible with your PyTorch version
+        self.scaler = scaler if scaler is not None else GradScaler()
         self.loss_fn = nn.CrossEntropyLoss(label_smoothing=0.1)
 
     def train_epoch(self, epoch):
@@ -30,20 +30,23 @@ class MedicalTrainer:
             texts = batch['input_ids'].to(self.device)
             answers = batch['answer'].to(self.device)
 
-            with autocast():  # AMP enabled
+            with autocast(enabled=self.scaler is not None):  # Mixed precision
                 outputs = self.model(images, texts)
                 loss = self.loss_fn(outputs, answers)
 
-            self.scaler.scale(loss).backward()
-            self.scaler.step(self.optimizer)
-            self.scaler.update()
+            if self.scaler:
+                self.scaler.scale(loss).backward()
+                self.scaler.step(self.optimizer)
+                self.scaler.update()
+            else:
+                loss.backward()
+                self.optimizer.step()
 
             total_loss += loss.item()
             preds = outputs.argmax(dim=1)
             total_correct += (preds == answers).sum().item()
             total_samples += answers.size(0)
 
-            # Real-time progress bar update
             progress_bar.set_postfix({
                 'Step': step,
                 'Loss': f"{loss.item():.4f}",
