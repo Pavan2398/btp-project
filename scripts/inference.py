@@ -13,8 +13,8 @@ from src.configs.clinical_config import ClinicalConfig
 
 
 LABELS = {
-    0: 'No',
-    1: 'Yes'
+    0: 'Yes',
+    1: 'No'
 }
 
 def load_ecg_image(image_path):
