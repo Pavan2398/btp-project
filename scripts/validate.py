@@ -79,12 +79,12 @@ def main():
 
     # Metrics
     acc = accuracy_score(all_labels, all_preds)
-    print(f"\n🎯 Accuracy: {acc:.4f}")
+    print(f"\n Accuracy: {acc:.4f}")
 
-    print("\n📊 Classification Report:")
+    print("\n Classification Report:")
     print(classification_report(all_labels, all_preds))
 
-    print("\n📉 Confusion Matrix:")
+    print("\n Confusion Matrix:")
     cm = confusion_matrix(all_labels, all_preds)
     print(cm)
 
