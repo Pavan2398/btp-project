@@ -6,7 +6,7 @@ from torchvision import transforms
 from transformers import AutoTokenizer
 import argparse
 
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(_file_), '..')))
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from src.model.clinical_vqa import ClinicalVQAModel
 from src.configs.clinical_config import ClinicalConfig
