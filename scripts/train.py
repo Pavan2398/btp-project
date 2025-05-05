@@ -17,7 +17,7 @@ def main():
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
     config.batch_size = 4
-    config.image_encoder = 'efficientnet-b0'
+    config.image_encoder = 'efficientnet-b4'
     config.use_amp = True  
 
     
@@ -53,7 +53,7 @@ def main():
     start_epoch = 0
 
     if os.path.exists(latest_ckpt):
-        print(f"🔁 Resuming from checkpoint: {latest_ckpt}")
+        print(f" Resuming from checkpoint: {latest_ckpt}")
         checkpoint = torch.load(latest_ckpt, map_location=device)
         model.load_state_dict(checkpoint['model_state_dict'])
         optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
