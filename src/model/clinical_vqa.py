@@ -17,15 +17,15 @@ class ClinicalVQAModel(nn.Module):
         self.classifier = ClinicalClassifier()
 
     def forward(self, images, input_ids):
-        # Use checkpointing during the forward pass
+      
         img_features = cp.checkpoint(self.image_encoder, images)
         txt_features = cp.checkpoint(self.text_encoder, input_ids)
 
-        # Multimodal fusion
+       
         fused_features = self.cross_attn(img_features, txt_features)
 
-        # Diagnostic gating
+   
         gated_features = self.diagnostic_gate(fused_features)
 
-        # Classification
+       
         return self.classifier(gated_features)

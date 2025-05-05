@@ -29,7 +29,7 @@ def main():
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     print(f"[INFO] Using device: {device}")
 
-    # Load test dataset
+
     print("[INFO] Loading test dataset...")
     test_dataset = ClinicalECGDataset(
         'clinical_data/test.json',
@@ -47,7 +47,7 @@ def main():
     )
     print("[INFO] DataLoader prepared.")
 
-    # Load model and weights
+   
     print("[INFO] Initializing model...")
     model = ClinicalVQAModel().to(device)
     print("[INFO] Loading pretrained weights...")
@@ -55,7 +55,7 @@ def main():
     model.eval()
     print("[INFO] Model ready for inference.")
 
-    # Inference
+
     print("[INFO] Starting inference...")
     all_preds = []
     all_labels = []
@@ -77,7 +77,7 @@ def main():
     all_preds = np.array(all_preds)
     all_labels = np.array(all_labels)
 
-    # Metrics
+  
     acc = accuracy_score(all_labels, all_preds)
     print(f"\n Accuracy: {acc:.4f}")
 
@@ -88,8 +88,8 @@ def main():
     cm = confusion_matrix(all_labels, all_preds)
     print(cm)
 
-    # Optionally show confusion matrix plot
-    class_names = [str(i) for i in np.unique(all_labels)]  # Or replace with actual class names
+    
+    class_names = [str(i) for i in np.unique(all_labels)]  
     plot_confusion_matrix(cm, class_names)
 
 if __name__ == "__main__":

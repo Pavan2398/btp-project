@@ -18,9 +18,9 @@ def main():
 
     config.batch_size = 4
     config.image_encoder = 'efficientnet-b0'
-    config.use_amp = True  # Enable AMP
+    config.use_amp = True  
 
-    # Dataset and DataLoader
+    
     train_dataset = ClinicalECGDataset(
         'clinical_data/train.json',
         'clinical_data/',
@@ -46,7 +46,7 @@ def main():
 
     scaler = torch.cuda.amp.GradScaler(enabled=config.use_amp)
 
-    # === Checkpoint handling ===
+   
     checkpoint_dir = 'checkpoints'
     os.makedirs(checkpoint_dir, exist_ok=True)
     latest_ckpt = os.path.join(checkpoint_dir, 'latest_checkpoint.pth')
@@ -62,15 +62,15 @@ def main():
         start_epoch = checkpoint['epoch'] + 1
         print(f"Resumed at epoch {start_epoch}")
 
-    # Trainer
+  
     trainer = MedicalTrainer(model, train_loader, None, optimizer, device, scaler=scaler)
 
-    # === Training Loop ===
+  
     for epoch in range(start_epoch, config.epochs):
         loss, accuracy = trainer.train_epoch(epoch)
         print(f"Epoch {epoch} Loss: {loss:.4f} | Accuracy: {accuracy * 100:.2f}%")
 
-        # Save every 5 epochs
+        
         if (epoch + 1) % 5 == 0:
             ckpt_path = os.path.join(checkpoint_dir, f'model_epoch_{epoch+1}.pth')
             torch.save({
@@ -81,7 +81,7 @@ def main():
             }, ckpt_path)
             print(f"💾 Saved checkpoint: {ckpt_path}")
 
-        # Always save latest
+     
         torch.save({
             'epoch': epoch,
             'model_state_dict': model.state_dict(),

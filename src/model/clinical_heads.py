@@ -10,7 +10,7 @@ class ClinicalClassifier(nn.Module):
             nn.LayerNorm(512),
             nn.Linear(512, 256),
             nn.ReLU(),
-            nn.Dropout(p=0.3),            # Dropout for regularization
+            nn.Dropout(p=0.3),            
             nn.Linear(256, 2),
             nn.LogSoftmax(dim=-1)
         )

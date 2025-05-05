@@ -11,7 +11,7 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(_file_), '..')))
 from src.model.clinical_vqa import ClinicalVQAModel
 from src.configs.clinical_config import ClinicalConfig
 
-# Optional: Replace with your actual label names
+
 LABELS = {
     0: 'No',
     1: 'Yes'
@@ -22,10 +22,10 @@ def load_ecg_image(image_path):
     transform = transforms.Compose([
         transforms.Resize((512, 512)),
         transforms.ToTensor(),
-        transforms.Normalize(mean=[0.5], std=[0.5])  # match training
+        transforms.Normalize(mean=[0.5], std=[0.5]) 
     ])
-    image = Image.open(image_path).convert("L")  # assume RGB even if white-on-black
-    return transform(image).unsqueeze(0)  # add batch dimension
+    image = Image.open(image_path).convert("L")  
+    return transform(image).unsqueeze(0)  
 
 def run_inference(image_path, question):
     config = ClinicalConfig()

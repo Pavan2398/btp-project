@@ -35,7 +35,7 @@ class ClinicalECGDataset(Dataset):
         return self._medical_transform(image)
 
     def _medical_transform(self, img):
-        img_array = np.array(img)  # convert PIL image to numpy array
+        img_array = np.array(img)  
         return torch.stack([
             torch.tensor(img_array).float().div(255).sub(0.5).div(0.5)
         ])
@@ -51,11 +51,11 @@ class ClinicalECGDataset(Dataset):
             padding='max_length',
             truncation=True,
             return_tensors='pt',
-            return_attention_mask=True  # ✅ Ensure attention mask is included
+            return_attention_mask=True 
         )
         return {
             'image': self._load_ecg_image(item['ecg_path']),
-            'input_ids': encoding['input_ids'].squeeze(0),         # (seq_len)
-            'attention_mask': encoding['attention_mask'].squeeze(0),  # ✅ added attention_mask
+            'input_ids': encoding['input_ids'].squeeze(0),         
+            'attention_mask': encoding['attention_mask'].squeeze(0),  
             'answer': torch.tensor(item['answer'], dtype=torch.long)
         }

@@ -8,8 +8,8 @@ import torch.nn.functional as F
 class MedicalCrossAttention(nn.Module):
     def __init__(self, img_dim=1792, txt_dim=512):
         super().__init__()
-        self.img_proj = nn.Linear(img_dim, 512)  # EfficientNet-B4 features
-        self.txt_proj = nn.Linear(txt_dim, 512)  # BioBERT projected features
+        self.img_proj = nn.Linear(img_dim, 512) 
+        self.txt_proj = nn.Linear(txt_dim, 512) 
         self.attention = nn.MultiheadAttention(512, 8)
         
     def forward(self, img_feats, txt_feats):
@@ -23,12 +23,12 @@ class MedicalCrossAttention(nn.Module):
         return attn_output.squeeze()
 
 
-# In src/model/multimodal_fusion.py
+
 class DiagnosticGate(nn.Module):
-    def __init__(self, input_dim=512):  # Changed from 1024 to match actual features
+    def __init__(self, input_dim=512):  
         super().__init__()
         self.gate = nn.Sequential(
-            nn.Linear(input_dim, 256),  # Input dimension matches fusion output
+            nn.Linear(input_dim, 256),  
             nn.ReLU(),
             nn.Linear(256, 1),
             nn.Sigmoid()

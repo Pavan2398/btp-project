@@ -13,21 +13,21 @@ class MedicalImageEncoder(nn.Module):
         
     def forward(self, x):
         x = self.base.extract_features(x)
-        x = self.adaptive_pool(x)  # Reduce spatial dimensions
+        x = self.adaptive_pool(x)  
         return x.flatten(1)
 
 
 class ClinicalTextEncoder(nn.Module):
     def __init__(self):
         super().__init__()
-        # ✅ Use ClinicalBERT (from Emily Alsentzer)
+     
         self.biobert = AutoModel.from_pretrained("emilyalsentzer/Bio_ClinicalBERT")
-        self.projection = nn.Linear(768, 512)  # Match expected fusion dim
+        self.projection = nn.Linear(768, 512)  
 
     def forward(self, input_ids, attention_mask=None):
         outputs = self.biobert(
             input_ids=input_ids,
             attention_mask=attention_mask
         )
-        cls_token = outputs.last_hidden_state[:, 0]  # [CLS] token representation
+        cls_token = outputs.last_hidden_state[:, 0]  
         return self.projection(cls_token)

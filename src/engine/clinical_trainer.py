@@ -30,7 +30,7 @@ class MedicalTrainer:
             texts = batch['input_ids'].to(self.device)
             answers = batch['answer'].to(self.device)
 
-            with autocast(enabled=self.scaler is not None):  # Mixed precision
+            with autocast(enabled=self.scaler is not None):  
                 outputs = self.model(images, texts)
                 loss = self.loss_fn(outputs, answers)
 
@@ -56,5 +56,5 @@ class MedicalTrainer:
         avg_loss = total_loss / len(self.train_loader)
         accuracy = total_correct / total_samples
 
-        print(f"✅ Epoch {epoch} completed | Loss: {avg_loss:.4f} | Accuracy: {accuracy:.4f}")
+        print(f" Epoch {epoch} completed | Loss: {avg_loss:.4f} | Accuracy: {accuracy:.4f}")
         return avg_loss, accuracy
