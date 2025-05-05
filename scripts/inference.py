@@ -50,7 +50,7 @@ def run_inference(image_path, question):
         predicted_idx = torch.argmax(outputs).item()
         predicted_label = LABELS.get(predicted_idx, str(predicted_idx))
 
-    print(f"\n Predicted: {predicted_label} (Class ID: {predicted_idx})")
+    print(f"\n Predicted: {predicted_label} ")
     return predicted_label
 
 if __name__ == "__main__":

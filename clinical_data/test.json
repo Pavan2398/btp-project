@@ -1,3 +1,142 @@
 [
-    
+    {
+        "template_id": 26,
+        "question_id": 1709,
+        "sample_id": 28997,
+        "question_type": "single-verify",
+        "attribute_type": "noise",
+        "question": "Does this ECG show static noise in lead V6?",
+        "answer": [
+            "yes"
+        ],
+        "ecg_id": [
+            19831
+        ],
+        "attribute": [
+            "static noise"
+        ],
+        "ecg_path": [
+            "ecgImages/ECG19831_clinical_512"
+        ]
+    },
+    {
+        "template_id": 1,
+        "question_id": 59,
+        "sample_id": 3235,
+        "question_type": "single-verify",
+        "attribute_type": "scp_code",
+        "question": "Does this ECG show symptoms of st/t change?",
+        "answer": [
+            "yes"
+        ],
+        "ecg_id": [
+            3934
+        ],
+        "attribute": [
+            "st/t change"
+        ],
+        "ecg_path": [
+            "ecgImages/ECG03934_clinical_512"
+        ]
+    },
+    {
+        "template_id": 26,
+        "question_id": 1709,
+        "sample_id": 28695,
+        "question_type": "single-verify",
+        "attribute_type": "noise",
+        "question": "Does this ECG show static noise in lead V1?",
+        "answer": [
+            "yes"
+        ],
+        "ecg_id": [
+            2911
+        ],
+        "attribute": [
+            "static noise"
+        ],
+        "ecg_path": [
+            "ecgImages/ECG02911_clinical_512"
+        ]
+    },
+    {
+        "template_id": 1,
+        "question_id": 17,
+        "sample_id": 1234,
+        "question_type": "single-verify",
+        "attribute_type": "scp_code",
+        "question": "Does this ECG show symptoms of myocardial infarction in anterior leads?",
+        "answer": [
+            "no"
+        ],
+        "ecg_id": [
+            5943
+        ],
+        "attribute": [
+            "myocardial infarction in anterior leads"
+        ],
+        "ecg_path": [
+            "ecgImages/ECG05943_clinical_512"
+        ]
+    },
+    {
+        "template_id": 36,
+        "question_id": 1858,
+        "sample_id": 35141,
+        "question_type": "single-verify",
+        "attribute_type": "extra_systole",
+        "question": "Does this ECG show extrasystoles?",
+        "answer": [
+            "yes"
+        ],
+        "ecg_id": [
+            12924
+        ],
+        "attribute": [
+            "extrasystoles"
+        ],
+        "ecg_path": [
+            "ecgImages/ECG12924_clinical_512"
+        ]
+    },
+    {
+        "template_id": 1,
+        "question_id": 52,
+        "sample_id": 2931,
+        "question_type": "single-verify",
+        "attribute_type": "scp_code",
+        "question": "Does this ECG show symptoms of sinus tachycardia?",
+        "answer": [
+            "no"
+        ],
+        "ecg_id": [
+            9489
+        ],
+        "attribute": [
+            "sinus tachycardia"
+        ],
+        "ecg_path": [
+            "ecgImages/ECG09489_clinical_512"
+        ]
+    },
+    {
+        "template_id": 1,
+        "question_id": 36,
+        "sample_id": 2069,
+        "question_type": "single-verify",
+        "attribute_type": "scp_code",
+        "question": "Does this ECG show symptoms of abnormal qrs?",
+        "answer": [
+            "no"
+        ],
+        "ecg_id": [
+            13882
+        ],
+        "attribute": [
+            "abnormal qrs"
+        ],
+        "ecg_path": [
+            "ecgImages/ECG13882_clinical_512"
+        ]
+    }
 ]
